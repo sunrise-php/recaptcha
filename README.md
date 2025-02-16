@@ -44,13 +44,34 @@ $userToken = '';
 $clientResponse = $client->sendRequest(new RecaptchaVerificationRequest(userToken: $userToken));
 
 if ($clientResponse->success) {
-    // the challenge has passed.
+    // Challenge passed
 } else {
-    // the challenge has failed.
+    // Challenge failed
 }
 ```
 
-### Symfony Validator
+### Integration with Sunrise Router
+
+```php
+use Sunrise\Http\Router\Annotation\Consumes;
+use Sunrise\Http\Router\Annotation\Middleware;
+use Sunrise\Http\Router\Annotation\PostApiRoute;
+use Sunrise\Http\Router\Annotation\RequestBody;
+use Sunrise\Http\Router\MediaType;
+use Sunrise\Recaptcha\Integration\Router\Middleware\RecaptchaChallengeMiddleware;
+
+final class AuthController
+{
+    #[PostApiRoute('api.login', '/api/login')]
+    #[Consumes(MediaType::JSON)]
+    #[Middleware(RecaptchaChallengeMiddleware::class)]
+    public function login(#[RequestBody] LoginRequest $loginRequest): void
+    {
+    }
+}
+```
+
+### Integration with Symfony Validator
 
 ```php
 use SensitiveParameter;
@@ -67,7 +88,7 @@ final readonly class UserLoginRequest
         #[Assert\NotBlank]
         #[SensitiveParameter]
         public string $password,
-        #[Assert\NotBlank(message: RecaptchaChallenge::DEFAULT_ERROR_MESSAGE)]
+        #[Assert\NotBlank(message: 'Prove that you are not a robot.')]
         #[RecaptchaChallenge]
         #[SensitiveParameter]
         public string $recaptcha,
@@ -84,6 +105,9 @@ use Sunrise\Recaptcha\RecaptchaVerificationClientInterface;
 
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->addDefinition(__DIR__ . '/../vendor/sunrise/recaptcha/resources/definitions/recaptcha_verification.php');
+
+// If Sunrise Router is used
+$containerBuilder->addDefinitions(__DIR__ . '/../vendor/sunrise/recaptcha/resources/definitions/integration/router/middleware/recaptcha_challenge_middleware.php');
 
 // If Symfony Validator is used
 $containerBuilder->addDefinition(__DIR__ . '/../vendor/sunrise/recaptcha/resources/definitions/integration/validator/constraint/recaptcha_challenge_validator.php');
