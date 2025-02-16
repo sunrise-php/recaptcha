@@ -47,13 +47,13 @@ final class RecaptchaChallengeValidatorTest extends TestCase
 
     public function testNullValue(): void
     {
-        $this->mockedExecutionContext->expects(self::never())->method('buildViolation');
+        $this->mockedExecutionContext->expects($this->never())->method('buildViolation');
         $this->createRecaptchaChallengeValidator()->validate(null, new RecaptchaChallenge());
     }
 
     public function testEmptyValue(): void
     {
-        $this->mockedExecutionContext->expects(self::never())->method('buildViolation');
+        $this->mockedExecutionContext->expects($this->never())->method('buildViolation');
         $this->createRecaptchaChallengeValidator()->validate('', new RecaptchaChallenge());
     }
 
@@ -67,19 +67,19 @@ final class RecaptchaChallengeValidatorTest extends TestCase
 
     public function testChallengePassed(): void
     {
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: true));
-        $this->mockedExecutionContext->expects(self::never())->method('buildViolation');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: true));
+        $this->mockedExecutionContext->expects($this->never())->method('buildViolation');
         $this->createRecaptchaChallengeValidator()->validate('foo', new RecaptchaChallenge());
     }
 
     public function testChallengeFailed(): void
     {
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
-        $this->mockedExecutionContext->expects(self::once())->method('buildViolation')->with(RecaptchaChallenge::DEFAULT_ERROR_MESSAGE)->willReturn($this->mockedConstraintViolationBuilder);
-        $this->mockedExecutionContext->expects(self::once())->method('getPropertyPath')->willReturn('recaptcha');
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('atPath')->with('recaptcha')->willReturnSelf();
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('addViolation');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
+        $this->mockedExecutionContext->expects($this->once())->method('buildViolation')->with(RecaptchaChallenge::DEFAULT_ERROR_MESSAGE)->willReturn($this->mockedConstraintViolationBuilder);
+        $this->mockedExecutionContext->expects($this->once())->method('getPropertyPath')->willReturn('recaptcha');
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('atPath')->with('recaptcha')->willReturnSelf();
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('addViolation');
         $validator = $this->createRecaptchaChallengeValidator();
         $validator->initialize($this->mockedExecutionContext);
         $validator->validate('foo', new RecaptchaChallenge());
@@ -87,12 +87,12 @@ final class RecaptchaChallengeValidatorTest extends TestCase
 
     public function testCustomErrorMessage(): void
     {
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
-        $this->mockedExecutionContext->expects(self::once())->method('buildViolation')->with('message')->willReturn($this->mockedConstraintViolationBuilder);
-        $this->mockedExecutionContext->expects(self::once())->method('getPropertyPath')->willReturn('recaptcha');
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('atPath')->with('recaptcha')->willReturnSelf();
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('addViolation');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
+        $this->mockedExecutionContext->expects($this->once())->method('buildViolation')->with('message')->willReturn($this->mockedConstraintViolationBuilder);
+        $this->mockedExecutionContext->expects($this->once())->method('getPropertyPath')->willReturn('recaptcha');
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('atPath')->with('recaptcha')->willReturnSelf();
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('addViolation');
         $validator = $this->createRecaptchaChallengeValidator();
         $validator->initialize($this->mockedExecutionContext);
         $validator->validate('foo', new RecaptchaChallenge(errorMessage: 'message'));
@@ -100,12 +100,12 @@ final class RecaptchaChallengeValidatorTest extends TestCase
 
     public function testCustomErrorPath(): void
     {
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
-        $this->mockedExecutionContext->expects(self::once())->method('buildViolation')->with(RecaptchaChallenge::DEFAULT_ERROR_MESSAGE)->willReturn($this->mockedConstraintViolationBuilder);
-        $this->mockedExecutionContext->expects(self::never())->method('getPropertyPath');
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('atPath')->with('path')->willReturnSelf();
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
-        $this->mockedConstraintViolationBuilder->expects(self::once())->method('addViolation');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
+        $this->mockedExecutionContext->expects($this->once())->method('buildViolation')->with(RecaptchaChallenge::DEFAULT_ERROR_MESSAGE)->willReturn($this->mockedConstraintViolationBuilder);
+        $this->mockedExecutionContext->expects($this->never())->method('getPropertyPath');
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('atPath')->with('path')->willReturnSelf();
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
+        $this->mockedConstraintViolationBuilder->expects($this->once())->method('addViolation');
         $validator = $this->createRecaptchaChallengeValidator();
         $validator->initialize($this->mockedExecutionContext);
         $validator->validate('foo', new RecaptchaChallenge(errorPath: 'path'));

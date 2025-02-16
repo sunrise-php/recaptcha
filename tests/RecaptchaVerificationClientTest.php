@@ -63,20 +63,20 @@ final class RecaptchaVerificationClientTest extends TestCase
         $this->codecContext = ['foo' => 'bar'];
         $this->hydratorContext = ['bar' => 'baz'];
 
-        $this->mockedHttpRequestFactory->expects(self::once())->method('createRequest')->with('POST', 'https://www.google.com/recaptcha/api/siteverify')->willReturn($this->mockedHttpRequest);
+        $this->mockedHttpRequestFactory->expects($this->once())->method('createRequest')->with('POST', 'https://www.google.com/recaptcha/api/siteverify')->willReturn($this->mockedHttpRequest);
 
-        $this->mockedHttpRequest->expects(self::exactly(2))->method('withHeader')->withAnyParameters()->willReturnCallback(function ($name, $value) {
+        $this->mockedHttpRequest->expects($this->exactly(2))->method('withHeader')->withAnyParameters()->willReturnCallback(function ($name, $value) {
             self::assertContains([$name, $value], [['Accept', 'application/json'], ['Content-Type', 'application/x-www-form-urlencoded']]);
             return $this->mockedHttpRequest;
         });
 
-        $this->mockedHttpRequest->expects(self::once())->method('getBody')->willReturn($this->mockedHttpRequestBody);
-        $this->mockedVerificationConfiguration->expects(self::once())->method('getPrivateKey')->willReturn('foo');
-        $this->mockedCodecManager->expects(self::once())->method('encode')->with(MediaType::UrlEncoded, ['secret' => 'foo', 'response' => 'bar'], $this->codecContext)->willReturn('secret=foo&response=bar');
-        $this->mockedHttpRequestBody->expects(self::once())->method('write')->with('secret=foo&response=bar')->willReturn(23);
-        $this->mockedHttpClient->expects(self::once())->method('sendRequest')->with($this->mockedHttpRequest)->willReturn($this->mockedHttpResponse);
-        $this->mockedHttpResponse->expects(self::once())->method('getBody')->willReturn($this->mockedHttpResponseBody);
-        $this->mockedHttpResponseBody->expects(self::once())->method('__toString')->willReturnCallback(fn() => $this->expectedHttpResponseBodyContents);
+        $this->mockedHttpRequest->expects($this->once())->method('getBody')->willReturn($this->mockedHttpRequestBody);
+        $this->mockedVerificationConfiguration->expects($this->once())->method('getPrivateKey')->willReturn('foo');
+        $this->mockedCodecManager->expects($this->once())->method('encode')->with(MediaType::UrlEncoded, ['secret' => 'foo', 'response' => 'bar'], $this->codecContext)->willReturn('secret=foo&response=bar');
+        $this->mockedHttpRequestBody->expects($this->once())->method('write')->with('secret=foo&response=bar')->willReturn(23);
+        $this->mockedHttpClient->expects($this->once())->method('sendRequest')->with($this->mockedHttpRequest)->willReturn($this->mockedHttpResponse);
+        $this->mockedHttpResponse->expects($this->once())->method('getBody')->willReturn($this->mockedHttpResponseBody);
+        $this->mockedHttpResponseBody->expects($this->once())->method('__toString')->willReturnCallback(fn() => $this->expectedHttpResponseBodyContents);
     }
 
     private function createRecaptchaClient(): RecaptchaVerificationClient
@@ -96,16 +96,16 @@ final class RecaptchaVerificationClientTest extends TestCase
     {
         $this->expectedHttpResponseBodyContents = '{"success":true}';
         $clientResponse = new RecaptchaVerificationResponse(success: true);
-        $this->mockedHydrator->expects(self::once())->method('hydrateWithJson')->with(RecaptchaVerificationResponse::class, $this->expectedHttpResponseBodyContents, self::anything(), self::anything(), self::anything(), $this->hydratorContext)->willReturn($clientResponse);
+        $this->mockedHydrator->expects($this->once())->method('hydrateWithJson')->with(RecaptchaVerificationResponse::class, $this->expectedHttpResponseBodyContents, self::anything(), self::anything(), self::anything(), $this->hydratorContext)->willReturn($clientResponse);
         $clientRequest = new RecaptchaVerificationRequest('bar');
-        $this->assertSame($clientResponse, $this->createRecaptchaClient()->sendRequest($clientRequest));
+        self::assertSame($clientResponse, $this->createRecaptchaClient()->sendRequest($clientRequest));
     }
 
     public function testUnexpectedHttpResponse(): void
     {
         $this->expectedHttpResponseBodyContents = '{"success":true}';
         $hydrationError = new InvalidDataException('Invalid data.');
-        $this->mockedHydrator->expects(self::once())->method('hydrateWithJson')->with(RecaptchaVerificationResponse::class, $this->expectedHttpResponseBodyContents, self::anything(), self::anything(), self::anything(), $this->hydratorContext)->willThrowException($hydrationError);
+        $this->mockedHydrator->expects($this->once())->method('hydrateWithJson')->with(RecaptchaVerificationResponse::class, $this->expectedHttpResponseBodyContents, self::anything(), self::anything(), self::anything(), $this->hydratorContext)->willThrowException($hydrationError);
         $clientRequest = new RecaptchaVerificationRequest('bar');
         $this->expectException(RecaptchaException::class);
         $this->expectExceptionMessage('Unexpected response received from Google reCAPTCHA.');
@@ -123,7 +123,7 @@ final class RecaptchaVerificationClientTest extends TestCase
     {
         $this->expectedHttpResponseBodyContents = sprintf('{"success":false,"error-codes":["%s"]}', $errorCode);
         $clientResponse = new RecaptchaVerificationResponse(success: false, errorCodes: [$errorCode]);
-        $this->mockedHydrator->expects(self::once())->method('hydrateWithJson')->with(RecaptchaVerificationResponse::class, $this->expectedHttpResponseBodyContents, self::anything(), self::anything(), self::anything(), $this->hydratorContext)->willReturn($clientResponse);
+        $this->mockedHydrator->expects($this->once())->method('hydrateWithJson')->with(RecaptchaVerificationResponse::class, $this->expectedHttpResponseBodyContents, self::anything(), self::anything(), self::anything(), $this->hydratorContext)->willReturn($clientResponse);
         $clientRequest = new RecaptchaVerificationRequest('bar');
         $this->expectException(RecaptchaException::class);
         $this->expectExceptionMessage(sprintf('Google reCAPTCHA verification failed: %s', $errorMessage));

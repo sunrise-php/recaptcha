@@ -49,9 +49,9 @@ final class RecaptchaChallengeMiddlewareTest extends TestCase
 
     public function testEmptyToken(): void
     {
-        $this->mockedHttpRequest->expects(self::once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('');
-        $this->mockedVerificationClient->expects(self::never())->method('sendRequest');
-        $this->mockedHttpRequestHandler->expects(self::never())->method('handle');
+        $this->mockedHttpRequest->expects($this->once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('');
+        $this->mockedVerificationClient->expects($this->never())->method('sendRequest');
+        $this->mockedHttpRequestHandler->expects($this->never())->method('handle');
         $middleware = $this->createRecaptchaChallengeMiddleware();
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('The request header "X-Recaptcha-Token" is missing or empty.');
@@ -66,9 +66,9 @@ final class RecaptchaChallengeMiddlewareTest extends TestCase
 
     public function testChallengeFailed(): void
     {
-        $this->mockedHttpRequest->expects(self::once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('foo');
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
-        $this->mockedHttpRequestHandler->expects(self::never())->method('handle');
+        $this->mockedHttpRequest->expects($this->once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('foo');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
+        $this->mockedHttpRequestHandler->expects($this->never())->method('handle');
         $middleware = $this->createRecaptchaChallengeMiddleware();
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Are you sure you are not a robot?');
@@ -83,25 +83,25 @@ final class RecaptchaChallengeMiddlewareTest extends TestCase
 
     public function testChallengePassed(): void
     {
-        $this->mockedHttpRequest->expects(self::once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('foo');
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: true));
-        $this->mockedHttpRequestHandler->expects(self::once())->method('handle')->with($this->mockedHttpRequest)->willReturn($this->mockedHttpResponse);
+        $this->mockedHttpRequest->expects($this->once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('foo');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: true));
+        $this->mockedHttpRequestHandler->expects($this->once())->method('handle')->with($this->mockedHttpRequest)->willReturn($this->mockedHttpResponse);
         self::assertSame($this->mockedHttpResponse, $this->createRecaptchaChallengeMiddleware()->process($this->mockedHttpRequest, $this->mockedHttpRequestHandler));
     }
 
     public function testCustomTokenHeaderName(): void
     {
-        $this->mockedHttpRequest->expects(self::once())->method('getHeaderLine')->with('X-Foo')->willReturn('foo');
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: true));
-        $this->mockedHttpRequestHandler->expects(self::once())->method('handle')->with($this->mockedHttpRequest)->willReturn($this->mockedHttpResponse);
+        $this->mockedHttpRequest->expects($this->once())->method('getHeaderLine')->with('X-Foo')->willReturn('foo');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: true));
+        $this->mockedHttpRequestHandler->expects($this->once())->method('handle')->with($this->mockedHttpRequest)->willReturn($this->mockedHttpResponse);
         self::assertSame($this->mockedHttpResponse, $this->createRecaptchaChallengeMiddleware(tokenHeaderName: 'X-Foo')->process($this->mockedHttpRequest, $this->mockedHttpRequestHandler));
     }
 
     public function testCustomEmptyTokenStatusCode(): void
     {
-        $this->mockedHttpRequest->expects(self::once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('');
-        $this->mockedVerificationClient->expects(self::never())->method('sendRequest');
-        $this->mockedHttpRequestHandler->expects(self::never())->method('handle');
+        $this->mockedHttpRequest->expects($this->once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('');
+        $this->mockedVerificationClient->expects($this->never())->method('sendRequest');
+        $this->mockedHttpRequestHandler->expects($this->never())->method('handle');
         $middleware = $this->createRecaptchaChallengeMiddleware(emptyTokenStatusCode: 500);
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('The request header "X-Recaptcha-Token" is missing or empty.');
@@ -116,9 +116,9 @@ final class RecaptchaChallengeMiddlewareTest extends TestCase
 
     public function testCustomEmptyTokenMessage(): void
     {
-        $this->mockedHttpRequest->expects(self::once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('');
-        $this->mockedVerificationClient->expects(self::never())->method('sendRequest');
-        $this->mockedHttpRequestHandler->expects(self::never())->method('handle');
+        $this->mockedHttpRequest->expects($this->once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('');
+        $this->mockedVerificationClient->expects($this->never())->method('sendRequest');
+        $this->mockedHttpRequestHandler->expects($this->never())->method('handle');
         $middleware = $this->createRecaptchaChallengeMiddleware(emptyTokenMessage: 'foo');
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('foo');
@@ -127,9 +127,9 @@ final class RecaptchaChallengeMiddlewareTest extends TestCase
 
     public function testCustomChallengeFailedStatusCode(): void
     {
-        $this->mockedHttpRequest->expects(self::once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('foo');
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
-        $this->mockedHttpRequestHandler->expects(self::never())->method('handle');
+        $this->mockedHttpRequest->expects($this->once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('foo');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
+        $this->mockedHttpRequestHandler->expects($this->never())->method('handle');
         $middleware = $this->createRecaptchaChallengeMiddleware(challengeFailedStatusCode: 500);
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('Are you sure you are not a robot?');
@@ -144,9 +144,9 @@ final class RecaptchaChallengeMiddlewareTest extends TestCase
 
     public function testCustomChallengeFailedMessage(): void
     {
-        $this->mockedHttpRequest->expects(self::once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('foo');
-        $this->mockedVerificationClient->expects(self::once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
-        $this->mockedHttpRequestHandler->expects(self::never())->method('handle');
+        $this->mockedHttpRequest->expects($this->once())->method('getHeaderLine')->with('X-Recaptcha-Token')->willReturn('foo');
+        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
+        $this->mockedHttpRequestHandler->expects($this->never())->method('handle');
         $middleware = $this->createRecaptchaChallengeMiddleware(challengeFailedMessage: 'foo');
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('foo');
