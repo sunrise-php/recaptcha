@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sunrise\Recaptcha;
 
-interface RecaptchaConfigurationInterface
+interface RecaptchaVerificationConfigurationInterface
 {
     public function getPrivateKey(): string;
 }

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sunrise\Recaptcha\Integration\Validator\Constraint;
 
-use Sunrise\Recaptcha\Dto\RecaptchaVerifyRequest;
-use Sunrise\Recaptcha\RecaptchaClientInterface;
+use Sunrise\Recaptcha\Dto\RecaptchaVerificationRequest;
+use Sunrise\Recaptcha\RecaptchaVerificationClientInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -25,7 +25,7 @@ use function is_string;
 final class RecaptchaChallengeValidator extends ConstraintValidator
 {
     public function __construct(
-        private readonly RecaptchaClientInterface $recaptchaClient,
+        private readonly RecaptchaVerificationClientInterface $verificationClient,
     ) {
     }
 
@@ -43,11 +43,11 @@ final class RecaptchaChallengeValidator extends ConstraintValidator
             throw new UnexpectedValueException($value, 'string');
         }
 
-        $recaptchaResponse = $this->recaptchaClient->sendVerifyRequest(
-            new RecaptchaVerifyRequest(token: $value)
+        $clientResponse = $this->verificationClient->sendRequest(
+            new RecaptchaVerificationRequest(userToken: $value)
         );
 
-        if ($recaptchaResponse->success) {
+        if ($clientResponse->success) {
             return;
         }
 

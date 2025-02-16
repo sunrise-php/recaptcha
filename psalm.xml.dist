@@ -16,6 +16,7 @@
     <issueHandlers>
         <PossiblyUnusedMethod errorLevel="suppress" />
         <PossiblyUnusedProperty errorLevel="suppress" />
+        <PropertyNotSetInConstructor errorLevel="suppress" />
         <UnusedClass errorLevel="suppress" />
     </issueHandlers>
 </psalm>

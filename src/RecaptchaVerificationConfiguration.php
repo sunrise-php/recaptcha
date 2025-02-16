@@ -13,13 +13,18 @@ declare(strict_types=1);
 
 namespace Sunrise\Recaptcha;
 
-use Sunrise\Recaptcha\Dto\RecaptchaVerifyRequest;
-use Sunrise\Recaptcha\Dto\RecaptchaVerifyResponse;
+use SensitiveParameter;
 
-interface RecaptchaClientInterface
+final readonly class RecaptchaVerificationConfiguration implements RecaptchaVerificationConfigurationInterface
 {
-    /**
-     * @link https://developers.google.com/recaptcha/docs/verify
-     */
-    public function sendVerifyRequest(RecaptchaVerifyRequest $clientRequest): RecaptchaVerifyResponse;
+    public function __construct(
+        #[SensitiveParameter]
+        private string $privateKey,
+    ) {
+    }
+
+    public function getPrivateKey(): string
+    {
+        return $this->privateKey;
+    }
 }

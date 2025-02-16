@@ -22,15 +22,15 @@ composer require sunrise/recaptcha
 
 ```php
 use DI\ContainerBuilder;
-use Sunrise\Recaptcha\RecaptchaClientInterface;
+use Sunrise\Recaptcha\RecaptchaVerificationClientInterface;
 
 $containerBuilder = new ContainerBuilder();
-$containerBuilder->addDefinition(__DIR__ . '/../vendor/sunrise/recaptcha/resources/definitions/client.php');
+$containerBuilder->addDefinition(__DIR__ . '/../vendor/sunrise/recaptcha/resources/definitions/verification.php');
 
 $container = $containerBuilder->build();
 
 // See above for usage examples.
-$recaptchaClient = $container->get(RecaptchaClientInterface::class);
+$recaptchaClient = $container->get(RecaptchaVerificationClientInterface::class);
 ```
 
 ## Tests

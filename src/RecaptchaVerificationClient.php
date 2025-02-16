@@ -20,28 +20,25 @@ use Sunrise\Coder\CodecManagerInterface;
 use Sunrise\Coder\Dictionary\MediaType;
 use Sunrise\Hydrator\Exception\InvalidDataException;
 use Sunrise\Hydrator\HydratorInterface;
-use Sunrise\Recaptcha\Dto\RecaptchaVerifyRequest;
-use Sunrise\Recaptcha\Dto\RecaptchaVerifyResponse;
+use Sunrise\Recaptcha\Dto\RecaptchaVerificationRequest;
+use Sunrise\Recaptcha\Dto\RecaptchaVerificationResponse;
 use Sunrise\Recaptcha\Exception\RecaptchaException;
 
 use function sprintf;
 
-final readonly class RecaptchaClient implements RecaptchaClientInterface
+final readonly class RecaptchaVerificationClient implements RecaptchaVerificationClientInterface
 {
-    private const HTTP_VERIFY_REQUEST_METHOD = 'POST';
-    private const HTTP_VERIFY_REQUEST_URI = 'https://www.google.com/recaptcha/api/siteverify';
-
     /**
      * @var array<string, string>
      */
-    private const VERIFICATION_ERROR_MESSAGES = [
-        'missing-input-secret' => 'The secret parameter is missing.',
-        'invalid-input-secret' => 'The secret parameter is invalid or malformed.',
+    private const ERROR_MESSAGES = [
         'bad-request' => 'The request is invalid or malformed.',
+        'invalid-input-secret' => 'The secret parameter is invalid or malformed.',
+        'missing-input-secret' => 'The secret parameter is missing.',
     ];
 
     public function __construct(
-        private RecaptchaConfigurationInterface $recaptchaConfiguration,
+        private RecaptchaVerificationConfigurationInterface $verificationConfiguration,
         private RequestFactoryInterface $httpRequestFactory,
         private ClientInterface $httpClient,
         private CodecManagerInterface $codecManager,
@@ -57,17 +54,17 @@ final readonly class RecaptchaClient implements RecaptchaClientInterface
      * @throws ClientExceptionInterface
      * @throws RecaptchaException
      */
-    public function sendVerifyRequest(RecaptchaVerifyRequest $clientRequest): RecaptchaVerifyResponse
+    public function sendRequest(RecaptchaVerificationRequest $clientRequest): RecaptchaVerificationResponse
     {
         $httpRequest = $this->httpRequestFactory
-            ->createRequest(self::HTTP_VERIFY_REQUEST_METHOD, self::HTTP_VERIFY_REQUEST_URI)
+            ->createRequest('POST', 'https://www.google.com/recaptcha/api/siteverify')
             ->withHeader('Accept', MediaType::JSON->value)
             ->withHeader('Content-Type', MediaType::UrlEncoded->value);
 
         $httpRequest->getBody()->write(
             $this->codecManager->encode(MediaType::UrlEncoded, [
-                'secret' => $this->recaptchaConfiguration->getPrivateKey(),
-                'response' => $clientRequest->token,
+                'secret' => $this->verificationConfiguration->getPrivateKey(),
+                'response' => $clientRequest->userToken,
             ], $this->codecContext)
         );
 
@@ -75,7 +72,7 @@ final readonly class RecaptchaClient implements RecaptchaClientInterface
 
         try {
             $clientResponse = $this->hydrator->hydrateWithJson(
-                RecaptchaVerifyResponse::class,
+                RecaptchaVerificationResponse::class,
                 (string) $httpResponse->getBody(),
                 context: $this->hydratorContext,
             );
@@ -87,10 +84,10 @@ final readonly class RecaptchaClient implements RecaptchaClientInterface
         }
 
         foreach ($clientResponse->errorCodes as $errorCode) {
-            if (isset(self::VERIFICATION_ERROR_MESSAGES[$errorCode])) {
+            if (isset(self::ERROR_MESSAGES[$errorCode])) {
                 throw new RecaptchaException(sprintf(
                     'Google reCAPTCHA verification failed: %s',
-                    self::VERIFICATION_ERROR_MESSAGES[$errorCode],
+                    self::ERROR_MESSAGES[$errorCode],
                 ));
             }
         }

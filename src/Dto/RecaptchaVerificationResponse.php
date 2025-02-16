@@ -11,20 +11,20 @@
 
 declare(strict_types=1);
 
-namespace Sunrise\Recaptcha;
+namespace Sunrise\Recaptcha\Dto;
 
-use SensitiveParameter;
+use Sunrise\Hydrator\Annotation\Alias;
+use Sunrise\Hydrator\Annotation\Subtype;
+use Sunrise\Hydrator\Dictionary\BuiltinType;
 
-final readonly class RecaptchaConfiguration implements RecaptchaConfigurationInterface
+final readonly class RecaptchaVerificationResponse
 {
     public function __construct(
-        #[SensitiveParameter]
-        private string $privateKey,
+        public bool $success,
+        /** @var string[] */
+        #[Alias('error-codes')]
+        #[Subtype(BuiltinType::STRING)]
+        public array $errorCodes = [],
     ) {
-    }
-
-    public function getPrivateKey(): string
-    {
-        return $this->privateKey;
     }
 }

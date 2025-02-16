@@ -13,18 +13,10 @@ declare(strict_types=1);
 
 namespace Sunrise\Recaptcha\Dto;
 
-use Sunrise\Hydrator\Annotation\Alias;
-use Sunrise\Hydrator\Annotation\Subtype;
-use Sunrise\Hydrator\Dictionary\BuiltinType;
-
-final readonly class RecaptchaVerifyResponse
+final readonly class RecaptchaVerificationRequest
 {
     public function __construct(
-        public bool $success,
-        /** @var string[] */
-        #[Alias('error-codes')]
-        #[Subtype(BuiltinType::STRING)]
-        public array $errorCodes = [],
+        public string $userToken,
     ) {
     }
 }

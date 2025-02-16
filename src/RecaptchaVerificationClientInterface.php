@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Sunrise\Recaptcha\Dto;
+namespace Sunrise\Recaptcha;
 
-final readonly class RecaptchaVerifyRequest
+use Sunrise\Recaptcha\Dto\RecaptchaVerificationRequest;
+use Sunrise\Recaptcha\Dto\RecaptchaVerificationResponse;
+
+interface RecaptchaVerificationClientInterface
 {
-    public function __construct(
-        public string $token,
-    ) {
-    }
+    public function sendRequest(RecaptchaVerificationRequest $clientRequest): RecaptchaVerificationResponse;
 }
