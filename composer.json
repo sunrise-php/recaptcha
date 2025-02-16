@@ -1,0 +1,61 @@
+{
+  "name": "sunrise/recaptcha",
+  "homepage": "https://github.com/sunrise-php/recaptcha",
+  "description": "Google reCAPTCHA client.",
+  "license": "MIT",
+  "keywords": [
+    "fenric",
+    "sunrise",
+    "http",
+    "client",
+    "google",
+    "recaptcha"
+  ],
+  "authors": [
+    {
+      "name": "Anatoly Nekhay",
+      "email": "afenric@gmail.com",
+      "homepage": "https://github.com/fenric"
+    }
+  ],
+  "require": {
+    "php": ">=8.2",
+    "psr/http-client": "^1.0",
+    "psr/http-factory": "^1.0 || ^2.0",
+    "sunrise/coder": "^1.1",
+    "sunrise/hydrator": "^3.15"
+  },
+  "require-dev": {
+    "php-di/php-di": "^7.0",
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^10.5",
+    "squizlabs/php_codesniffer": "^3.11",
+    "symfony/validator": "^7.2",
+    "vimeo/psalm": "^6.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sunrise\\Recaptcha\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Sunrise\\Recaptcha\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "phpcs": "@php phpcs --colors",
+    "psalm": "@php psalm --no-cache",
+    "phpstan": "@php phpstan analyse src --level=9 --memory-limit=-1",
+    "phpunit": "@php phpunit --colors=always",
+    "test": [
+      "@phpcs",
+      "@psalm",
+      "@phpstan",
+      "@phpunit"
+    ]
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
