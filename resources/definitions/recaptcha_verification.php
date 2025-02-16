@@ -22,7 +22,7 @@ return [
 
     RecaptchaVerificationConfigurationInterface::class => create(RecaptchaVerificationConfiguration::class)
         ->constructor(
-            privateKey: get('recaptcha.private_key'),
+            privateKey: get('recaptcha.verification.private_key'),
         ),
 
     RecaptchaVerificationClientInterface::class => create(RecaptchaVerificationClient::class)
