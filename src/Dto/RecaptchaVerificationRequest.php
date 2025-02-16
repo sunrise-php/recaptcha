@@ -13,9 +13,12 @@ declare(strict_types=1);
 
 namespace Sunrise\Recaptcha\Dto;
 
+use SensitiveParameter;
+
 final readonly class RecaptchaVerificationRequest
 {
     public function __construct(
+        #[SensitiveParameter]
         public string $userToken,
     ) {
     }

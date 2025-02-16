@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sunrise\Recaptcha\Integration\Validator\Constraint;
 
+use SensitiveParameter;
 use Sunrise\Recaptcha\Dto\RecaptchaVerificationRequest;
 use Sunrise\Recaptcha\RecaptchaVerificationClientInterface;
 use Symfony\Component\Validator\Constraint;
@@ -29,7 +30,7 @@ final class RecaptchaChallengeValidator extends ConstraintValidator
     ) {
     }
 
-    public function validate(mixed $value, Constraint $constraint): void
+    public function validate(#[SensitiveParameter] mixed $value, Constraint $constraint): void
     {
         if (! $constraint instanceof RecaptchaChallenge) {
             throw new UnexpectedTypeException($constraint, RecaptchaChallenge::class);
