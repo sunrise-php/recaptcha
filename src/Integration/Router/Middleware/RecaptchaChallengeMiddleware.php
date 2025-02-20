@@ -20,6 +20,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Sunrise\Http\Router\Dictionary\PlaceholderCode;
 use Sunrise\Http\Router\Exception\HttpException;
+use Sunrise\Recaptcha\Dictionary\ErrorMessage;
 use Sunrise\Recaptcha\Dto\RecaptchaVerificationRequest;
 use Sunrise\Recaptcha\RecaptchaVerificationClientInterface;
 
@@ -27,9 +28,9 @@ final readonly class RecaptchaChallengeMiddleware implements MiddlewareInterface
 {
     public const DEFAULT_TOKEN_HEADER_NAME = 'X-Recaptcha-Token';
     public const DEFAULT_EMPTY_TOKEN_STATUS_CODE = StatusCodeInterface::STATUS_BAD_REQUEST;
-    public const DEFAULT_EMPTY_TOKEN_MESSAGE = 'The request header "{{ header_name }}" is missing or empty.';
+    public const DEFAULT_EMPTY_TOKEN_MESSAGE = ErrorMessage::MISSING_OR_EMPTY_HEADER;
     public const DEFAULT_CHALLENGE_FAILED_STATUS_CODE = StatusCodeInterface::STATUS_FORBIDDEN;
-    public const DEFAULT_CHALLENGE_FAILED_MESSAGE = 'Are you sure you are not a robot?';
+    public const DEFAULT_CHALLENGE_FAILED_MESSAGE = ErrorMessage::CHALLENGE_FAILED;
 
     public function __construct(
         private RecaptchaVerificationClientInterface $verificationClient,
