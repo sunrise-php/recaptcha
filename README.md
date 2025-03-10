@@ -1,4 +1,4 @@
-## Google reCAPTCHA Client
+# Google reCAPTCHA Client
 
 ## Resources
 
