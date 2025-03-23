@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Sunrise\Recaptcha\Dictionary\ErrorMessage;
 
 return [
-    ErrorMessage::CHALLENGE_FAILED => 'Translation of "Are you sure you are not a robot?" into Urdu is:
-کیا آپ کو یقین ہے کہ آپ روبوٹ نہیں ہیں؟',
-    ErrorMessage::MISSING_OR_EMPTY_HEADER => 'Запрос заголовка "{{ header_name }}" відсутній або порожній.',
+    ErrorMessage::CHALLENGE_FAILED => 'کیا آپ یقینی ہیں کہ آپ روبوٹ نہیں ہیں؟',
+    ErrorMessage::MISSING_OR_EMPTY_HEADER => 'درخواست ہیڈر "{{ header_name }}" غائب یا خالی ہے۔',
 ];

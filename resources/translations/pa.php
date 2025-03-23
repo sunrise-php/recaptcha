@@ -5,6 +5,6 @@ declare(strict_types=1);
 use Sunrise\Recaptcha\Dictionary\ErrorMessage;
 
 return [
-    ErrorMessage::CHALLENGE_FAILED => 'Вы уверены, что не робот?',
-    ErrorMessage::MISSING_OR_EMPTY_HEADER => 'Заголовок запроса "{{ header_name }}" отсутствует или пуст.',
+    ErrorMessage::CHALLENGE_FAILED => 'ਕੀ ਤੁਸੀਂ ਯਕੀਨੀ ਹੋ ਕਿ ਤੁਸੀਂ ਰੋਬੋਟ ਨਹੀਂ ਹੋ?',
+    ErrorMessage::MISSING_OR_EMPTY_HEADER => 'ਬਿੰਦੀ ਸਿਰ {{ header_name }} ਗਈ ਹੈ ਜਾਂ ਖਾਲੀ ਹੈ।',
 ];
