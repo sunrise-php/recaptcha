@@ -21,6 +21,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Sunrise\Http\Router\Dictionary\PlaceholderCode;
 use Sunrise\Http\Router\Exception\HttpException;
 use Sunrise\Recaptcha\Dictionary\ErrorMessage;
+use Sunrise\Recaptcha\Dictionary\TranslationDomain;
 use Sunrise\Recaptcha\Dto\RecaptchaVerificationRequest;
 use Sunrise\Recaptcha\RecaptchaVerificationClientInterface;
 
@@ -50,6 +51,7 @@ final readonly class RecaptchaChallengeMiddleware implements MiddlewareInterface
             $emptyTokenStatusCode = $this->emptyTokenStatusCode ?? self::DEFAULT_EMPTY_TOKEN_STATUS_CODE;
             $emptyTokenMessage = $this->emptyTokenMessage ?? self::DEFAULT_EMPTY_TOKEN_MESSAGE;
             throw (new HttpException($emptyTokenMessage, $emptyTokenStatusCode))
+                ->setTranslationDomain(TranslationDomain::RECAPTCHA)
                 ->addMessagePlaceholder(PlaceholderCode::HEADER_NAME, $tokenHeaderName);
         }
 
@@ -58,7 +60,8 @@ final readonly class RecaptchaChallengeMiddleware implements MiddlewareInterface
         if (!$recaptchaResponse->success) {
             $challengeFailedStatusCode = $this->challengeFailedStatusCode ?? self::DEFAULT_CHALLENGE_FAILED_STATUS_CODE;
             $challengeFailedMessage = $this->challengeFailedMessage ?? self::DEFAULT_CHALLENGE_FAILED_MESSAGE;
-            throw new HttpException($challengeFailedMessage, $challengeFailedStatusCode);
+            throw (new HttpException($challengeFailedMessage, $challengeFailedStatusCode))
+                ->setTranslationDomain(TranslationDomain::RECAPTCHA);
         }
 
         return $handler->handle($request);
