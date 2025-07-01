@@ -17,12 +17,14 @@ use function DI\get;
 
 return [
     'recaptcha.verification.private_key' => env('RECAPTCHA_VERIFICATION_PRIVATE_KEY'),
+    'recaptcha.verification.bypass_tokens' => [],
     'recaptcha.verification.codec_context' => [],
     'recaptcha.verification.hydrator_context' => [],
 
     RecaptchaVerificationConfigurationInterface::class => create(RecaptchaVerificationConfiguration::class)
         ->constructor(
             privateKey: get('recaptcha.verification.private_key'),
+            bypassTokens: get('recaptcha.verification.bypass_tokens'),
         ),
 
     RecaptchaVerificationClientInterface::class => create(RecaptchaVerificationClient::class)

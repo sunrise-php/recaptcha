@@ -14,4 +14,10 @@ final class RecaptchaVerificationConfigurationTest extends TestCase
         $configuration = new RecaptchaVerificationConfiguration(privateKey: 'foo');
         self::assertSame('foo', $configuration->getPrivateKey());
     }
+
+    public function testConstructorWithBypassTokensParameter(): void
+    {
+        $configuration = new RecaptchaVerificationConfiguration(privateKey: '-', bypassTokens: ['foo', 'bar']);
+        self::assertSame(['foo', 'bar'], $configuration->getBypassTokens());
+    }
 }

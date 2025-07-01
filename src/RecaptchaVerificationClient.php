@@ -56,6 +56,10 @@ final readonly class RecaptchaVerificationClient implements RecaptchaVerificatio
      */
     public function sendRequest(RecaptchaVerificationRequest $clientRequest): RecaptchaVerificationResponse
     {
+        if (\in_array($clientRequest->userToken, $this->verificationConfiguration->getBypassTokens(), true)) {
+            return new RecaptchaVerificationResponse(success: true);
+        }
+
         $httpRequest = $this->httpRequestFactory
             ->createRequest('POST', 'https://www.google.com/recaptcha/api/siteverify')
             ->withHeader('Accept', MediaType::JSON->value)

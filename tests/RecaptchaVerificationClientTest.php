@@ -42,6 +42,16 @@ final class RecaptchaVerificationClientTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->initMocks();
+
+        // TODO: the test must be rewritten
+        if (!\in_array($this->name(), ['testSendRequestWithBypassToken'], true)) {
+            $this->prepareMocks();
+        }
+    }
+
+    private function initMocks(): void
+    {
         $this->mockedVerificationConfiguration = $this->createMock(RecaptchaVerificationConfigurationInterface::class);
         $this->mockedHttpRequestFactory = $this->createMock(RequestFactoryInterface::class);
         $this->mockedHttpClient = $this->createMock(ClientInterface::class);
@@ -54,8 +64,6 @@ final class RecaptchaVerificationClientTest extends TestCase
         $this->mockedHttpResponse = $this->createMock(ResponseInterface::class);
         $this->mockedHttpResponseBody = $this->createMock(StreamInterface::class);
         $this->expectedHttpResponseBodyContents = '';
-
-        $this->prepareMocks();
     }
 
     private function prepareMocks(): void
@@ -99,6 +107,13 @@ final class RecaptchaVerificationClientTest extends TestCase
         $this->mockedHydrator->expects($this->once())->method('hydrateWithJson')->with(RecaptchaVerificationResponse::class, $this->expectedHttpResponseBodyContents, self::anything(), self::anything(), self::anything(), $this->hydratorContext)->willReturn($clientResponse);
         $clientRequest = new RecaptchaVerificationRequest('bar');
         self::assertSame($clientResponse, $this->createRecaptchaClient()->sendRequest($clientRequest));
+    }
+
+    public function testSendRequestWithBypassToken(): void
+    {
+        $this->mockedVerificationConfiguration->expects($this->once())->method('getBypassTokens')->willReturn(['a', 'b', 'c']);
+        $this->mockedHttpClient->expects($this->never())->method('sendRequest');
+        $this->createRecaptchaClient()->sendRequest(new RecaptchaVerificationRequest('b'));
     }
 
     public function testUnexpectedHttpResponse(): void

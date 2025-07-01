@@ -20,11 +20,22 @@ final readonly class RecaptchaVerificationConfiguration implements RecaptchaVeri
     public function __construct(
         #[SensitiveParameter]
         private string $privateKey,
+        /** @var string[] */
+        #[SensitiveParameter]
+        private array $bypassTokens = [],
     ) {
     }
 
     public function getPrivateKey(): string
     {
         return $this->privateKey;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBypassTokens(): array
+    {
+        return $this->bypassTokens;
     }
 }

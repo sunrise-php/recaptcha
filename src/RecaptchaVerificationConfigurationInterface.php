@@ -16,4 +16,9 @@ namespace Sunrise\Recaptcha;
 interface RecaptchaVerificationConfigurationInterface
 {
     public function getPrivateKey(): string;
+
+    /**
+     * @return string[]
+     */
+    public function getBypassTokens(): array;
 }
