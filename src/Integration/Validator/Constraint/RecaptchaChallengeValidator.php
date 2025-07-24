@@ -53,7 +53,6 @@ final class RecaptchaChallengeValidator extends ConstraintValidator
         }
 
         $this->context->buildViolation($constraint->errorMessage ?? RecaptchaChallenge::DEFAULT_ERROR_MESSAGE)
-            ->atPath($constraint->errorPath ?? $this->context->getPropertyPath())
             ->setCode(RecaptchaChallenge::ERROR_CODE)
             ->addViolation();
     }

@@ -27,6 +27,7 @@ final class RecaptchaChallenge extends Constraint
      * @param array<array-key, string>|null $groups
      */
     public function __construct(
+        /** @deprecated 1.3.0 */
         public readonly ?string $errorPath = null,
         public readonly ?string $errorMessage = null,
         mixed $options = null,
