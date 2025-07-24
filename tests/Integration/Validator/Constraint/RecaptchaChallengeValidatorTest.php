@@ -76,8 +76,6 @@ final class RecaptchaChallengeValidatorTest extends TestCase
     {
         $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
         $this->mockedExecutionContext->expects($this->once())->method('buildViolation')->with(RecaptchaChallenge::DEFAULT_ERROR_MESSAGE)->willReturn($this->mockedConstraintViolationBuilder);
-        $this->mockedExecutionContext->expects($this->once())->method('getPropertyPath')->willReturn('recaptcha');
-        $this->mockedConstraintViolationBuilder->expects($this->once())->method('atPath')->with('recaptcha')->willReturnSelf();
         $this->mockedConstraintViolationBuilder->expects($this->once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
         $this->mockedConstraintViolationBuilder->expects($this->once())->method('addViolation');
         $validator = $this->createRecaptchaChallengeValidator();
@@ -89,8 +87,6 @@ final class RecaptchaChallengeValidatorTest extends TestCase
     {
         $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
         $this->mockedExecutionContext->expects($this->once())->method('buildViolation')->with('message')->willReturn($this->mockedConstraintViolationBuilder);
-        $this->mockedExecutionContext->expects($this->once())->method('getPropertyPath')->willReturn('recaptcha');
-        $this->mockedConstraintViolationBuilder->expects($this->once())->method('atPath')->with('recaptcha')->willReturnSelf();
         $this->mockedConstraintViolationBuilder->expects($this->once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
         $this->mockedConstraintViolationBuilder->expects($this->once())->method('addViolation');
         $validator = $this->createRecaptchaChallengeValidator();
