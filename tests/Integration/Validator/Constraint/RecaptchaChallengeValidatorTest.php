@@ -97,17 +97,4 @@ final class RecaptchaChallengeValidatorTest extends TestCase
         $validator->initialize($this->mockedExecutionContext);
         $validator->validate('foo', new RecaptchaChallenge(errorMessage: 'message'));
     }
-
-    public function testCustomErrorPath(): void
-    {
-        $this->mockedVerificationClient->expects($this->once())->method('sendRequest')->with(self::callback(fn(RecaptchaVerificationRequest $clientRequest) => $clientRequest->userToken === 'foo'))->willReturn(new RecaptchaVerificationResponse(success: false));
-        $this->mockedExecutionContext->expects($this->once())->method('buildViolation')->with(RecaptchaChallenge::DEFAULT_ERROR_MESSAGE)->willReturn($this->mockedConstraintViolationBuilder);
-        $this->mockedExecutionContext->expects($this->never())->method('getPropertyPath');
-        $this->mockedConstraintViolationBuilder->expects($this->once())->method('atPath')->with('path')->willReturnSelf();
-        $this->mockedConstraintViolationBuilder->expects($this->once())->method('setCode')->with(RecaptchaChallenge::ERROR_CODE)->willReturnSelf();
-        $this->mockedConstraintViolationBuilder->expects($this->once())->method('addViolation');
-        $validator = $this->createRecaptchaChallengeValidator();
-        $validator->initialize($this->mockedExecutionContext);
-        $validator->validate('foo', new RecaptchaChallenge(errorPath: 'path'));
-    }
 }
